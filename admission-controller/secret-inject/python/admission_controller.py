@@ -13,17 +13,17 @@ def mutation():
 
     annotations = review['request']['object']['metadata']['annotations']
     app.logger.info("Annotations on the pod are: %s",annotations)
-    
+
     response = {}
 
     # Only allow if there are valid annotationn
-    if 'secrets.k8s.aws/sidecarInjectorWebhook' and 'secrets.k8s.aws/secret-arn' not in list(annotations):
+    if 'secrets.k8s.aws/secret-arn' not in list(annotations):
         app.logger.info("Nothing to do because of missing annotations ...")
     else:
         app.logger.info("Annotations present ...")
         app.logger.info("Injecting init container to the pod definition ...")
         response = secrets_initcont_patch(annotations,response)    
-    
+
     response['allowed'] = True
     review['response'] = response
     #app.logger.info("Mutating AdmissionReview request: %s", review)
